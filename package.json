@@ -7,6 +7,10 @@
   "author": "Anna Borja",
   "license": "MIT",
   "scripts": {
-    "start": "node index.js"
+    "start": "node index.js",
+    "test": "jest"
+  },
+  "devDependencies": {
+    "jest": "^23.6.0"
   }
 }
