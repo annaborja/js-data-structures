@@ -6,8 +6,6 @@ class Node {
       writable: false,
       value: datum,
     });
-
-    this.next = null;
   }
 }
 

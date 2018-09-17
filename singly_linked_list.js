@@ -1,35 +1,15 @@
+const LinkedList = require('./linked_list');
 const Node = require('./node');
 
-function search(datum, node, foundFn, prevNode = null) {
-  if (!node) {
-    return false;
-  }
+class CustomNode extends Node {
+  constructor(datum) {
+    super(datum);
 
-  // TODO: Allow for checking for deep equality in addition to object identity.
-  if (Object.is(node.datum, datum)) {
-    return foundFn(node, prevNode);
+    this.next = null;
   }
-
-  return search(datum, node.next, foundFn, node);
 }
 
-class SinglyLinkedList {
-  constructor(data = []) {
-    this.head = null;
-    this.tail = null;
-    this.size = 0;
-
-    [...data].forEach(datum => this.append(datum));
-  }
-
-  *[Symbol.iterator]() {
-    for (let node = this.head; !!node; node = node.next) {
-      yield node.datum;
-    }
-
-    return null;
-  }
-
+class SinglyLinkedList extends LinkedList {
   *reverseIterator() {
     let node = this.tail;
 
@@ -51,7 +31,7 @@ class SinglyLinkedList {
   }
 
   append(datum) {
-    const node = new Node(datum);
+    const node = new CustomNode(datum);
 
     if (this.tail) {
       this.tail.next = node;
@@ -65,7 +45,7 @@ class SinglyLinkedList {
   }
 
   prepend(datum) {
-    const node = new Node(datum);
+    const node = new CustomNode(datum);
 
     if (this.head) {
       node.next = this.head;
@@ -78,12 +58,8 @@ class SinglyLinkedList {
     this.size++;
   }
 
-  contains(datum) {
-    return search(datum, this.head, () => true);
-  }
-
   remove(datum) {
-    return search(datum, this.head, (function(node, prevNode) {
+    return this.find(datum, this.head, (function(node, prevNode) {
       if (!prevNode) {
         if (Object.is(this.head, this.tail)) {
           this.head = null;

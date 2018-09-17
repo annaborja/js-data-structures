@@ -1,27 +1,11 @@
+const linkedListProto = require('./linked_list_proto');
 const createNode = require('./create_node');
 
-function search(datum, node, foundFn, prevNode = null) {
-  if (!node) {
-    return false;
-  }
-
-  // TODO: Allow for checking for deep equality in addition to object identity.
-  if (Object.is(node.datum, datum)) {
-    return foundFn(node, prevNode);
-  }
-
-  return search(datum, node.next, foundFn, node);
+function createCustomNode(datum) {
+  return Object.assign(createNode(datum), { next: null });
 }
 
 const proto = {
-  *[Symbol.iterator]() {
-    for (let node = this.head; !!node; node = node.next) {
-      yield node.datum;
-    }
-
-    return null;
-  },
-
   *reverseIterator() {
     let node = this.tail;
 
@@ -43,7 +27,7 @@ const proto = {
   },
 
   append(datum) {
-    const node = createNode(datum);
+    const node = createCustomNode(datum);
 
     if (this.tail) {
       this.tail.next = node;
@@ -57,7 +41,7 @@ const proto = {
   },
 
   prepend(datum) {
-    const node = createNode(datum);
+    const node = createCustomNode(datum);
 
     if (this.head) {
       node.next = this.head;
@@ -70,12 +54,8 @@ const proto = {
     this.size++;
   },
 
-  contains(datum) {
-    return search(datum, this.head, () => true);
-  },
-
   remove(datum) {
-    return search(datum, this.head, (function(node, prevNode) {
+    return this.find(datum, this.head, (function(node, prevNode) {
       if (!prevNode) {
         if (Object.is(this.head, this.tail)) {
           this.head = null;
@@ -111,11 +91,7 @@ const proto = {
 };
 
 function createSinglyLinkedList(data = []) {
-  const list = Object.assign(Object.create(proto), {
-    head: null,
-    tail: null,
-    size: 0,
-  });
+  const list = Object.assign(Object.create(linkedListProto), proto);
 
   [...data].forEach(datum => list.append(datum));
 

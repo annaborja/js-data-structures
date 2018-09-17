@@ -1,5 +1,5 @@
 function createNode(datum) {
-  const node = { next: null };
+  const node = {};
 
   Object.defineProperty(node, 'datum', {
     configurable: false,
